@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { app, GoogleAuthProvider } from './firebase'; // Import the app and GoogleAuthProvider objects from firebase.js
+import { GoogleAuthProvider, auth } from './firebase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -8,9 +8,9 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setError(''); // Clear previous error
+    setError('');
 
-    app.auth().signInWithEmailAndPassword(email, password)
+    auth.signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         // Handle successful login
         console.log('User logged in:', userCredential.user);
@@ -23,7 +23,7 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     const provider = new GoogleAuthProvider();
-    app.auth().signInWithPopup(provider)
+    auth.signInWithPopup(provider)
       .then((result) => {
         // Handle successful Google login
         console.log('Google user logged in:', result.user);
@@ -50,4 +50,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
