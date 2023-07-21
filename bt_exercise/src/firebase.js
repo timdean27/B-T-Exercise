@@ -1,8 +1,13 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+} from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider } from "firebase/auth"; // Import GoogleAuthProvider from firebase/auth
-
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -18,8 +23,50 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-
+const provider = new GoogleAuthProvider();
 const auth = getAuth(app); // Get the auth object using the getAuth function
+export const firebaseDB = getFirestore(app);
+export { app, analytics, auth, provider };
 
-export { app, analytics, auth, GoogleAuthProvider };
-
+export const checkUserProfileExists = async (uid) => {
+    const userProfileRef = doc(firebaseDB, "userProfiles", uid);
+    const userProfileSnapshot = await getDoc(userProfileRef);
+    return userProfileSnapshot.exists();
+  };
+  
+  export const createUserProfile = async (uid, profileData) => {
+    try {
+      const userProfileRef = doc(firebaseDB, "userProfiles", uid);
+      await setDoc(userProfileRef, profileData);
+    } catch (error) {
+      console.error("Error creating user profile:", error);
+      throw error;
+    }
+  };
+  
+  export const getUserProfile = async (uid) => {
+    try {
+      console.log("UID:", uid);
+      const userProfileRef = doc(firebaseDB, "userProfiles", uid);
+      console.log("userProfileRef:", userProfileRef);
+      const userProfileSnapshot = await getDoc(userProfileRef);
+  
+      if (userProfileSnapshot.exists()) {
+        const profileData = userProfileSnapshot.data();
+        return { id: userProfileSnapshot.id, ...profileData };
+      }
+    } catch (error) {
+      console.error("Error retrieving user profile:", error);
+      throw error;
+    }
+  };
+  
+  export const updateUserProfile = async (uid, profileData) => {
+    try {
+      const userProfileRef = doc(firebaseDB, "userProfiles", uid);
+      await setDoc(userProfileRef, profileData, { merge: true });
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      throw error;
+    }
+  };
