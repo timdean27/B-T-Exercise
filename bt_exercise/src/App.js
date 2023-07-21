@@ -45,8 +45,6 @@ const App = () => {
               <RequireAuth>
                 <Home
                   currentUser={currentUser}
-                  selectedRole={selectedRole}
-                  onRoleSelect={setSelectedRole}
                 />
               </RequireAuth>
             ) : (
