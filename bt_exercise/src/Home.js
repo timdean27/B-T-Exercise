@@ -1,8 +1,16 @@
 import React from 'react'
 
-const Home = () => {
+import FireBaseLogin from './Authentication/FireBaseLogin'
+
+
+
+const Home = ({currentUser}) => {
   return (
-    <div>Home</div>
+    <div>
+
+      <FireBaseLogin currentUser={currentUser}/>
+
+      </div>
   )
 }
 

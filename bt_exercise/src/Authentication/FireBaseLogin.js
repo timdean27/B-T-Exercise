@@ -1,24 +1,26 @@
-import React, { useContext, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
-import { auth, provider } from "../firebase";
+import { auth, googleProvider } from "../firebase";
 import { AuthContext } from "./Context/AuthContext";
 
-
-const FireBaseLogin = () => {
+const FireBaseLogin = ({ currentUser }) => {
   const [error, setError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
-  const { currentUser, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
 
   const handleLogin = (e) => {
     e.preventDefault();
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        // Signed in
         const user = userCredential.user;
         dispatch({ type: "LOGIN", payload: user });
+        console.log("user Credentials from email sign in", user);
         navigate("/");
       })
       .catch((error) => {
@@ -28,9 +30,11 @@ const FireBaseLogin = () => {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, provider).then((userCredential) => {
+      await signInWithPopup(auth, googleProvider).then((userCredential) => {
+        // Signed in
         const user = userCredential.user;
         dispatch({ type: "LOGIN", payload: user });
+        console.log("user Credentials from google sign in", user);
         navigate("/");
       });
     } catch (err) {
@@ -38,21 +42,21 @@ const FireBaseLogin = () => {
     }
   };
 
-  // for fail safe if logout on home does not work
   const logout = async () => {
     try {
       await signOut(auth);
-      dispatch({ type: "LOGOUT" });
+      localStorage.removeItem("user");
       navigate("/FireBaseLogin");
     } catch (err) {
       console.error(err);
     }
   };
 
+  console.log("currentuser in login page", currentUser);
   return (
-    <div className="login">
+    <div>
       {!currentUser ? (
-        <div>
+        <div className="login">
           <form onSubmit={handleLogin}>
             <input
               type="email"
@@ -67,14 +71,10 @@ const FireBaseLogin = () => {
             <button type="submit">Login</button>
             {error && <span>Wrong email or password!</span>}
           </form>
-          <button className="google-button" onClick={signInWithGoogle}>
-            Sign In With Google
-          </button>
+          <button onClick={signInWithGoogle}> Sign In With Google</button>
         </div>
       ) : (
-        <button className="logout-button" onClick={logout}>
-          Log Out
-        </button>
+        <button onClick={logout}>Log Out</button>
       )}
     </div>
   );

@@ -1,36 +1,38 @@
-import React, { useContext } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthContext } from "./Authentication/Context/AuthContext";
+import React, { useState, useEffect, useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { FaBeer } from "react-icons/fa";
 import Home from "./Home";
-import BackButton from "./Components/BackButton";
 import FireBaseLogin from "./Authentication/FireBaseLogin";
 import FireBaseCreateUser from "./Authentication/FireBaseCreateUser";
+import { AuthContext } from "./Authentication/Context/AuthContext";
 
-const RequireAuth = ({ children }) => {
+function App() {
   const { currentUser } = useContext(AuthContext);
-  return currentUser ? children : <Navigate to="/FireBaseLogin" />;
-};
+  console.log("currentUser in app page" ,currentUser);
 
-const App = () => {
+  const RequireAuth = ({ children }) => {
+    return currentUser ? children : <Navigate to="/FireBaseLogin" />;
+  };
+
   return (
     <BrowserRouter>
-      <BackButton />
       <Routes>
-        <Route path="/FireBaseLogin" element={<FireBaseLogin />} />
-        <Route path="/create-user" element={<FireBaseCreateUser />} />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <Home />
-            </RequireAuth>
-          }
-        />
+        <Route path="/">
+          <Route path="FireBaseLogin" element={<FireBaseLogin currentUser={currentUser}/>} />
+          <Route
+            element={
+              <RequireAuth>
+                <Home currentUser={currentUser}/>
+              </RequireAuth>
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
+
 
 
