@@ -1,63 +1,60 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react"; // Import the 'useState' hook
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { signInWithPopup, signOut } from "firebase/auth"; // Import the required functions from firebase/auth
+import { auth, googleProvider } from "../firebase";
+import { AuthContext } from "./Context/AuthContext";
 
-const FireBaseCreateUser = () => {
+const FireBaseCreateUser = ({ currentUser }) => {
+  const [error, setError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
-  const handleCreateUser = async (e) => {
+  const { dispatch } = useContext(AuthContext);
+
+  const handleLogin = (e) => {
     e.preventDefault();
 
+    signInWithPopup(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        dispatch({ type: "LOGIN", payload: user });
+        console.log("user Credentials from email sign in", user);
+        navigate("/");
+      })
+      .catch((error) => {
+        setError(true);
+      });
+  };
+
+  const signUpWithGoogle = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      // User account successfully created, you can handle further actions here.
-      console.log("User created:", userCredential.user);
-
-      // Navigate to the home page or any other desired page after successful account creation
-      navigate("/");
-    } catch (error) {
-      setError(error.message);
+      await signInWithPopup(auth, googleProvider).then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        dispatch({ type: "LOGIN", payload: user });
+        console.log("user Credentials from google sign in", user);
+        navigate("/");
+      });
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  return (
-    <div>
-      <h2>Create New User</h2>
-      <form onSubmit={handleCreateUser}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <button type="submit">Create User</button>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
-    </div>
-  );
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      navigate("/FireBaseLogin");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  console.log("currentUser in login page", currentUser);
+  return <div>FireBaseCreateUser</div>;
 };
 
 export default FireBaseCreateUser;
