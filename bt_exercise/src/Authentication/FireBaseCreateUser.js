@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
 
 const FireBaseCreateUser = () => {
   const [email, setEmail] = useState("");
@@ -9,52 +9,53 @@ const FireBaseCreateUser = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateUser = (e) => {
+  const handleCreateUser = async (e) => {
     e.preventDefault();
-    setError("");
-  
-    // Password validation regex
-    const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$/;
-  
-    if (!passwordRegex.test(password)) {
-      setError(
-        "Password must be at least 8 characters long and contain at least one number and one special character."
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
       );
-      return;
+
+      // User account successfully created, you can handle further actions here.
+      console.log("User created:", userCredential.user);
+
+      // Navigate to the home page or any other desired page after successful account creation
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
     }
-  
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // User creation successful
-        console.log("User created:", userCredential.user);
-        navigate("/FireBaseLogin"); // Redirect to login page
-      })
-      .catch((error) => {
-        // Handle error during user creation
-        console.error("Error creating user:", error);
-        setError("Failed to create user. Please try again.");
-      });
   };
 
   return (
     <div>
-      <h1>Create User</h1>
+      <h2>Create New User</h2>
       <form onSubmit={handleCreateUser}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Create User</button>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <button type="submit">Create User</button>
+        </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
-      {error && <p>{error}</p>}
     </div>
   );
 };

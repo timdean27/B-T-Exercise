@@ -70,7 +70,6 @@ const FireBaseLogin = () => {
           <button className="google-button" onClick={signInWithGoogle}>
             Sign In With Google
           </button>
-          <Link to="/create-user">Create New User</Link>
         </div>
       ) : (
         <button className="logout-button" onClick={logout}>
