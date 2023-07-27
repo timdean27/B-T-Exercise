@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
@@ -17,7 +17,6 @@ const FireBaseLogin = ({ currentUser }) => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         dispatch({ type: "LOGIN", payload: user });
         console.log("user Credentials from email sign in", user);
@@ -31,7 +30,6 @@ const FireBaseLogin = ({ currentUser }) => {
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider).then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         dispatch({ type: "LOGIN", payload: user });
         console.log("user Credentials from google sign in", user);
@@ -46,13 +44,14 @@ const FireBaseLogin = ({ currentUser }) => {
     try {
       await signOut(auth);
       localStorage.removeItem("user");
-      navigate("/FireBaseLogin");
+      // Refresh the page
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
   };
+  
 
-  console.log("currentuser in login page", currentUser);
   return (
     <div>
       {!currentUser ? (
@@ -74,7 +73,10 @@ const FireBaseLogin = ({ currentUser }) => {
           <button onClick={signInWithGoogle}> Sign In With Google</button>
         </div>
       ) : (
-        <button onClick={logout}>Log Out</button>
+        <div>
+          <p>Welcome, {currentUser.email}!</p>
+          <button onClick={logout}>Log Out</button>
+        </div>
       )}
     </div>
   );
