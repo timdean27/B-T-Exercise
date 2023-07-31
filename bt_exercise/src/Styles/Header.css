@@ -1,33 +1,49 @@
-/* Header.css */
-
 .header-container {
     background-color: #333;
     color: #fff;
     padding: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
   }
   
   .header-title {
-    flex: 1;
-    font-size: 24px;
+    font-size: 4vw; /* Adjust the font size using viewport width */
+    margin: 0; /* Remove any default margin */
   }
   
-  .header-nav ul {
-    list-style: none;
+  .header-nav {
     display: flex;
-    gap: 10px;
-  }
-  
-  .header-nav li {
-    cursor: pointer;
+    gap: 2vw; /* Adjust the gap between elements using viewport width */
   }
   
   .header-nav button {
-    padding: 5px 10px;
+    padding: 1vw 2vw; /* Adjust padding using viewport width */
     border: none;
     background-color: #fff;
     color: #333;
     cursor: pointer;
+  }
+  
+  /* Mobile-friendly styles */
+  @media (max-width: 768px) {
+    .header-container {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 5px;
+    }
+  
+    .header-title {
+      font-size: 6vw; /* Adjust the font size for mobile using viewport width */
+    }
+  
+    .header-nav {
+      margin-top: 10px;
+      gap: 4vw; /* Adjust the gap between elements for mobile using viewport width */
+    }
+  
+    .header-nav button {
+      padding: 2vw 4vw; /* Adjust padding for mobile using viewport width */
+    }
   }
   
