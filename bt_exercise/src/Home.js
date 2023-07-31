@@ -1,17 +1,13 @@
-import React from 'react'
+import React from 'react';
+import Header from './Components/Header';
 
-import FireBaseLogin from './Authentication/FireBaseLogin'
-
-
-
-const Home = ({currentUser}) => {
+const Home = ({ currentUser }) => {
   return (
     <div>
+      <Header currentUser={currentUser} />
+      Home
+    </div>
+  );
+};
 
-      <FireBaseLogin currentUser={currentUser}/>
-        Home
-      </div>
-  )
-}
-
-export default Home
+export default Home;
