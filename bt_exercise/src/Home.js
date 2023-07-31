@@ -9,7 +9,7 @@ const Home = ({currentUser}) => {
     <div>
 
       <FireBaseLogin currentUser={currentUser}/>
-
+        Home
       </div>
   )
 }
