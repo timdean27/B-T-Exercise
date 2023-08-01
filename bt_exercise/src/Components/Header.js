@@ -10,7 +10,7 @@ const Header = ({ currentUser }) => {
         <ul>
           <li>
             {/* Render the FireBaseLogin component with the currentUser prop */}
-            <FireBaseLogin currentUser={currentUser} />
+            <FireBaseLogin currentUser={currentUser} className="LogOut"/>
           </li>
         </ul>
       </nav>
