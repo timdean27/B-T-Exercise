@@ -7,6 +7,10 @@ import { AuthContext } from "./Authentication/Context/AuthContext";
 function App() {
   const { currentUser } = useContext(AuthContext);
 
+  const RequireAuth = ({ children }) => {
+    return currentUser ? children : <Navigate to="/FireBaseLogin" />;
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -14,7 +18,7 @@ function App() {
         <Route path="/FireBaseLogin" element={<FireBaseLogin currentUser={currentUser} />} />
         
         {/* Default route with nested route */}
-        <Route path="/" element={<Home currentUser={currentUser} />} />
+        <Route path="/" element={<RequireAuth><Home currentUser={currentUser} /></RequireAuth>} />
       </Routes>
     </BrowserRouter>
   );
