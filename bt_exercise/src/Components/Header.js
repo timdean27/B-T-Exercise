@@ -1,11 +1,12 @@
 import React from 'react';
 import FireBaseLogin from '../Authentication/FireBaseLogin';
 import '../Styles/Header.css'; // Import the CSS file for styling
-
+import BackButton from "./BackButton";
 const Header = ({ currentUser }) => {
   return (
     <header className="header-container">
       <h1 className="header-title">My App</h1>
+      <BackButton/>
       <nav className="header-nav">
         <ul>
           <li>
