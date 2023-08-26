@@ -43,7 +43,6 @@ const VideoViewer = () => {
         </button>
         <button
           onClick={handleNextVideo}
-          disabled={currentVideoIndex === videos.length - 1}
         >
           Next Video
         </button>
